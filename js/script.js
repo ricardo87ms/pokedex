@@ -11,15 +11,8 @@ function start() {
 }
 
 function getPokemonsApi() {
-  var ajax = new XMLHttpRequest();
-
-  ajax.open('GET', 'https://pokeapi.co/api/v2/pokemon?limit=151', true);
-
-  ajax.send();
-
-  ajax.onreadystatechange = function () {
-    if (ajax.readyState == 4 && ajax.status == 200) {
-      var data = JSON.parse(ajax.responseText);
+  fetch('https://pokeapi.co/api/v2/pokemon?limit=151').then((res) => {
+    res.json().then((data) => {
       pokemons = data.results;
 
       const listPokemons = document.querySelector('#pokemons');
@@ -29,6 +22,6 @@ function getPokemonsApi() {
           return criaPokemon(pokemon);
         })
         .join('');
-    }
-  };
+    });
+  });
 }
