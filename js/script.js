@@ -1,27 +1,34 @@
 window.addEventListener('load', start);
 
+const listaPokemons = document.querySelector('#pokemons');
+
 let pokemons = [];
 
+function selecionaPokemon(name) {
+  console.log(name);
+}
+
 function criaPokemon(pokemon) {
-  return `<li>${pokemon.name}</li>`;
+  return `<li onclick="selecionaPokemon('${pokemon.name}')">${pokemon.name}</li>`;
 }
 
-function start() {
-  getPokemonsApi();
+function render() {
+  listaPokemons.innerHTML = pokemons
+    .map((pokemon) => {
+      return criaPokemon(pokemon);
+    })
+    .join('');
 }
 
-function getPokemonsApi() {
-  fetch('https://pokeapi.co/api/v2/pokemon?limit=151').then((res) => {
-    res.json().then((data) => {
-      pokemons = data.results;
+async function start() {
+  pokemons = await getPokemonsApi();
+  render();
+}
 
-      const listPokemons = document.querySelector('#pokemons');
+async function getPokemonsApi() {
+  const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151');
 
-      listPokemons.innerHTML = pokemons
-        .map((pokemon) => {
-          return criaPokemon(pokemon);
-        })
-        .join('');
-    });
-  });
+  const data = await res.json();
+
+  return data.results;
 }
